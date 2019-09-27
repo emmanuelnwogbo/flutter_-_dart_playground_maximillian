@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import './question.dart';
+import './answer.dart';
 
 /*void main() {
   runApp(MyApp());
@@ -20,31 +21,42 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   var _questionIndex = 0;
 
+    final questions = const [
+      {
+        'questionText': 'What\'s your favorite color',
+        'answers': [
+          'Black', 'Red', 'Green', 'White'
+        ]
+      },
+      {
+        'questionText': 'What\'s your favorite animal',
+        'answers': [
+          'Rabbit', 'Snake', 'Elephant', 'Lion'
+        ]
+      },
+      {
+        'questionText': 'Who\'s your favorite instructor',
+        'answers': [
+          'Max', 'Stephen', 'Emmanuel', 'Brad'
+        ]
+      },
+    ];
+
   void _answerQuestion() {
+    /*if (_questionIndex > 1) {
+      return;
+    }*/
     setState(() {
       _questionIndex = _questionIndex + 1;
     });
     print(_questionIndex); 
+    if (_questionIndex < questions.length) {
+        print('We have more questions');
+    }
   }
 
   @override //@override is provided by Dart not by Flutter
   Widget build(BuildContext context) {
-
-    var questions = [
-      'What\'s your favorite color',
-      'What\'s your favorite animal',
-      'What\'s your favorite movie'
-    ];
-
-    var btnVals = [
-      'Answer 1',
-      'Answer 2',
-      'Answer 3',
-    ];
-
-    Widget _returnAnswerBtns() {
-      return new Column(children: btnVals.map((item) => RaisedButton(child: Text(item), onPressed: _answerQuestion)).toList());
-    }
 
     return MaterialApp(
       home: Scaffold(
@@ -52,14 +64,19 @@ class _MyAppState extends State<MyApp> {
               title: Text(
             'My first Flutter App',
           )),
-          body: Column(
+          body: _questionIndex < questions.length ? Column(
             children: [
-              Question(questions[_questionIndex]),
-              _returnAnswerBtns(),
+              Question(questions[_questionIndex]['questionText']),
+              ...(questions[_questionIndex]['answers'] as List<String>).map((answer) {
+                return Answer(_answerQuestion, answer);
+              }).toList()
+              //Answer(_answerQuestion),
               //RaisedButton(child: Text('Answer 2'), onPressed: _answerQuestion),
               //RaisedButton(child: Text('Answer 3'), onPressed: () => print('Answer is awesome yo')),
             ],
-          )),
+          ): Center(
+            child: Text('You did it!'),
+          ))
     );
   }
 }
